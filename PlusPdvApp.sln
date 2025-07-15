@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlusPdvApp", "PlusPdvApp\PlusPdvApp.csproj", "{CDA1C148-2442-4C43-AE75-DFFB792400B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDA1C148-2442-4C43-AE75-DFFB792400B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA1C148-2442-4C43-AE75-DFFB792400B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA1C148-2442-4C43-AE75-DFFB792400B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA1C148-2442-4C43-AE75-DFFB792400B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C8DF09D-D07C-477E-9970-C2D4105283C0}
+	EndGlobalSection
+EndGlobal
