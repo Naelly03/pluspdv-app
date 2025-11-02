@@ -14,7 +14,6 @@
         <SolidColorBrush x:Key="TextColor" Color="#FF333333"/>
         <SolidColorBrush x:Key="ErrorColor" Color="#FFD32F2F"/>
 
-
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
             <Setter Property="FontSize" Value="14"/>
@@ -100,7 +99,6 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-
     </Window.Resources>
 
     <Grid>
@@ -110,7 +108,8 @@
 
         <Border Grid.Row="0" x:Name="LoginPanel" Background="White"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="350" Padding="25" CornerRadius="20,20,20,20">
+                Width="350" Padding="25" 
+                CornerRadius="20,20,20,20">
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="5" Color="LightGray" Direction="270" BlurRadius="10" Opacity="0.5"/>
             </Border.Effect>
@@ -121,25 +120,27 @@
                 </TextBlock>
 
                 <TextBlock Text="Loja"/>
-                <TextBox x:Name="StoreTextBox" Width="Auto" HorizontalAlignment="Stretch" Height="36" FontSize="14" Text="1"/>
+                <TextBox x:Name="StoreTextBox" Text="{Binding StoreId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" HorizontalAlignment="Stretch" Height="36" FontSize="14" />
 
                 <TextBlock Text="Usuário:"/>
-                <TextBox x:Name="UsernameTextBox" Width="Auto" HorizontalAlignment="Stretch" Height="35" Text="1"/>
+                <TextBox x:Name="UsernameTextBox" Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" HorizontalAlignment="Stretch" Height="35" />
 
                 <TextBlock Text="Senha:" Margin="5,10,5,2"/>
-                <PasswordBox x:Name="PasswordTextBox" Width="Auto" HorizontalAlignment="Stretch" Height="36" Password="admg"/>
+                <TextBox x:Name="PasswordTextBox" Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" HorizontalAlignment="Stretch" Height="36" />
 
-
-                <TextBlock x:Name="LoginStatusTextBlock" TextWrapping="Wrap" Margin="5"
+                <TextBlock x:Name="LoginStatusTextBlock" Text="{Binding LoginStatusMessage}" TextWrapping="Wrap" Margin="5"
                            HorizontalAlignment="Center" TextAlignment="Center"
                            Foreground="{StaticResource ErrorColor}"/>
+
                 <Button Content="Entrar" Width="286" Height="30" Padding="4,2" FontSize="12"
-    Margin="2"
-    Click="Login_Click" VerticalAlignment="Center"/>
+                        Margin="2"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsLoginEnabled}"
+                        VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
 
-        <Grid Grid.Row="0" x:Name="ProductSearchGrid" Visibility="Collapsed" Margin="20">
+        <Grid Grid.Row="0" x:Name="ProductSearchGrid" Visibility="{Binding ProductSearchVisibility}" Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -151,31 +152,23 @@
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="4" HorizontalAlignment="Center">
                 <TextBlock Text="Nome do Produto:" VerticalAlignment="Center"/>
-                <TextBox x:Name="ProductNameTextBox" Width="200"/>
+                <TextBox x:Name="ProductNameTextBox" Width="200" Text="{Binding ProductName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBlock Text="Ordenar por:" VerticalAlignment="Center" Margin="20,0,5,0"/>
-                <ComboBox x:Name="SortOrderComboBox" Width="120" SelectedIndex="0">
-                    <ComboBoxItem Content="name"/>
-                    <ComboBoxItem Content="reverse_name"/>
-                    <ComboBoxItem Content="id"/>
-                    <ComboBoxItem Content="reverse_id"/>
-                    <ComboBoxItem Content="manufacturer"/>
-                    <ComboBoxItem Content="reverse_manufacturer"/>
-                    <ComboBoxItem Content="supplier"/>
-                    <ComboBoxItem Content="reverse_supplier"/>
-                    <ComboBoxItem Content="section"/>
-                    <ComboBoxItem Content="reverse_section"/>
-                    <ComboBoxItem Content="subsection"/>
-                    <ComboBoxItem Content="reverse_subsection"/>
+                <ComboBox x:Name="SortOrderComboBox" Width="120" 
+                          ItemsSource="{Binding SortOrderOptions}"
+                          SelectedItem="{Binding SelectedSortOrder}">
                 </ComboBox>
-                <Button Content="Buscar Produto" Width="130" Margin="20,0,0,0" Click="SearchProducts_Click"/>
+
+                <Button Content="Buscar Produto" Width="130" Margin="20,0,0,0" Command="{Binding SearchProductsCommand}"/>
             </StackPanel>
 
-            <TextBlock Grid.Row="2" x:Name="ProductStatusTextBlock" TextWrapping="Wrap" Margin="5"
+            <TextBlock Grid.Row="2" x:Name="ProductStatusTextBlock" Text="{Binding ProductStatusMessage}" TextWrapping="Wrap" Margin="5"
                        HorizontalAlignment="Center" TextAlignment="Center"
                        Foreground="{StaticResource ErrorColor}"/>
 
-            <DataGrid Grid.Row="3" x:Name="ProductDataGrid" IsReadOnly="True" Margin="5">
+            <DataGrid Grid.Row="3" x:Name="ProductDataGrid" IsReadOnly="True" Margin="5"
+                      ItemsSource="{Binding Products}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                     <DataGridTextColumn Header="Nome" Binding="{Binding Name}" Width="*"/>
