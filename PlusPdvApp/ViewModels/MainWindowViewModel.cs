@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using PlusPdvApp.Models;
 using PlusPdvApp.Services;
-using System.Collections.ObjectModel; 
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows; 
+using System.Windows;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace PlusPdvApp.ViewModels
     public partial class MainWindowViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+
         [ObservableProperty]
         private string _storeId = "1";
 
@@ -21,26 +22,25 @@ namespace PlusPdvApp.ViewModels
         private string _username = "1";
 
         [ObservableProperty]
-        private string _password = "admg"; 
+        private string _password = "admg2";
 
         [ObservableProperty]
         private string _loginStatusMessage;
 
         [ObservableProperty]
-        private Visibility _productSearchVisibility = Visibility.Collapsed; 
+        private Visibility _productSearchVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
         private string _productName;
 
         public List<string> SortOrderOptions { get; } = new List<string>
         {
-            "name", "reverse_name", "id", "reverse_id", "manufacturer",
-            "reverse_manufacturer", "supplier", "reverse_supplier",
-            "section", "reverse_section", "subsection", "reverse_subsection"
-        }; //
+            "name", "id","manufacturer",
+            "section", "subsection"
+        };
 
         [ObservableProperty]
-        private string _selectedSortOrder = "name"; 
+        private string _selectedSortOrder = "name";
 
         [ObservableProperty]
         private string _productStatusMessage;
@@ -50,6 +50,9 @@ namespace PlusPdvApp.ViewModels
 
         [ObservableProperty]
         private bool _isLoginEnabled = true;
+
+        [ObservableProperty]
+        private bool _isSearching;
 
         public MainWindowViewModel(ApiService apiService)
         {
@@ -62,13 +65,13 @@ namespace PlusPdvApp.ViewModels
         {
             if (string.IsNullOrEmpty(StoreId) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
-                LoginStatusMessage = "Por favor, preencha todos os campos (Loja, Usuário e Senha)."; //
+                LoginStatusMessage = "Por favor, preencha todos os campos (Loja, Usuário e Senha).";
                 ProductSearchVisibility = Visibility.Collapsed;
                 return;
             }
 
             LoginStatusMessage = "Tentando fazer login...";
-            IsLoginEnabled = false; 
+            IsLoginEnabled = false;
 
             var loginRequest = new LoginRequest
             {
@@ -81,8 +84,8 @@ namespace PlusPdvApp.ViewModels
             try
             {
                 var loginResponse = await _apiService.LoginAsync(loginRequest);
-                LoginStatusMessage = "Login bem-sucedido! Token recuperado."; 
-                ProductSearchVisibility = Visibility.Visible; 
+                LoginStatusMessage = "Login bem-sucedido! Token recuperado.";
+                ProductSearchVisibility = Visibility.Visible;
             }
             catch (Exception ex)
             {
@@ -95,7 +98,8 @@ namespace PlusPdvApp.ViewModels
         [RelayCommand]
         private async Task SearchProductsAsync()
         {
-            ProductStatusMessage = "Buscando produtos..."; 
+            ProductStatusMessage = "Buscando produtos...";
+            IsSearching = true;
 
             try
             {
@@ -103,12 +107,12 @@ namespace PlusPdvApp.ViewModels
 
                 if (productList != null && productList.Any())
                 {
-                    Products = new ObservableCollection<Product>(productList); 
-                    ProductStatusMessage = $"Encontrados {productList.Count} produtos."; 
+                    Products = new ObservableCollection<Product>(productList);
+                    ProductStatusMessage = $"Encontrados {productList.Count} produtos.";
                 }
                 else
                 {
-                    Products.Clear(); 
+                    Products.Clear();
                     ProductStatusMessage = "Nenhum produto encontrado com seus critérios.";
                 }
             }
@@ -122,8 +126,26 @@ namespace PlusPdvApp.ViewModels
             }
             catch (Exception ex)
             {
-                ProductStatusMessage = $"Falha na busca de produtos: {ex.Message}"; 
+                ProductStatusMessage = $"Falha na busca de produtos: {ex.Message}";
             }
+            finally
+            {
+                IsSearching = false; 
+            }
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            _apiService.ClearToken();
+            Products.Clear();
+            ProductName = string.Empty;
+            ProductStatusMessage = string.Empty;
+            LoginStatusMessage = "Você saiu.";
+
+            ProductSearchVisibility = Visibility.Collapsed;
+
+            IsLoginEnabled = true;
         }
     }
 }
